@@ -21,9 +21,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -83,6 +85,7 @@ fun RegistrationActivity(navController: NavHostController){
                     var password by remember { mutableStateOf(TextFieldValue("")) }
                     var selectedOption by remember { mutableStateOf("") }
                     var showError by remember { mutableStateOf(false) }
+                    var loading by remember { mutableStateOf(false) }
 
                     Text(text = "Full Name", modifier = Modifier.align(Alignment.Start))
                     TextField(
@@ -148,6 +151,7 @@ fun RegistrationActivity(navController: NavHostController){
                         onClick = {
                             showError = name.text.isEmpty() || email.text.isEmpty() || password.text.isEmpty() || selectedOption.isEmpty()
                             if (!showError) {
+                                loading = true
                                 // Authenticate and store data
                                 val auth = FirebaseAuth.getInstance()
                                 auth.createUserWithEmailAndPassword(email.text, password.text)
@@ -166,9 +170,10 @@ fun RegistrationActivity(navController: NavHostController){
                                             )
                                             // Store user information in the database with their UID
                                             userId?.let {
-                                                database.child("users").child(it).setValue(userMap)
+                                                database.child("FarmPurUsers").child(it).setValue(userMap)
                                                     .addOnCompleteListener { dbTask ->
                                                         if (dbTask.isSuccessful) {
+                                                            loading = false
                                                             // Data stored successfully
 
                                                             Toast.makeText(context, "Registration successful!", Toast.LENGTH_SHORT).show()
@@ -180,14 +185,17 @@ fun RegistrationActivity(navController: NavHostController){
 
                                                         } else {
                                                             // Failed to store data
+                                                            loading = false
                                                             Toast.makeText(context, "Failed to store user data.", Toast.LENGTH_SHORT).show()
                                                         }
                                                     }
                                             }
                                         } else {
                                             // Authentication failed
+                                            loading = false
                                             showError = true
-                                            Toast.makeText(context, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                                            val errorMessage = task.exception?.localizedMessage ?: "Authentication failed."
+                                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                                         }
                                     }
                             }
@@ -197,6 +205,14 @@ fun RegistrationActivity(navController: NavHostController){
                         Text(text = "Register")
                     }
 
+                    if (loading) {
+                        // Display the progress bar only when loading is true
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(top = 16.dp)
+                        )
+                    }
                     if (showError) {
                         Text(
                             text = "Please fill in all fields and select an option to continue.",
@@ -204,6 +220,16 @@ fun RegistrationActivity(navController: NavHostController){
                             modifier = Modifier.padding(top = 8.dp)
                         )
                     }
+
+                    Row (modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center){
+                        Text(text = "Already Have Account?")
+                         TextButton(onClick = {  }) {
+                             Text(text = "LOG IN")
+                         }
+                    }
+
                 }
             }
         }
