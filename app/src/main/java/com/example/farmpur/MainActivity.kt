@@ -23,7 +23,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             FarmpurTheme {
 //                GetStartedActivity()
-                MainContent()
+//                MainContent()
+                LoginActivity()
             }
         }
     }
