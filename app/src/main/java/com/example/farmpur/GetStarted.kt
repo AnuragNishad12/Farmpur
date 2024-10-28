@@ -24,14 +24,12 @@ import androidx.compose.ui.unit.sp
 @Composable
 @Preview
 fun GetStartedActivity(){
-
    Box(modifier = Modifier
        .fillMaxSize()
        .background(Color(0xFFF8C471))){
        Column (modifier = Modifier.fillMaxSize(),
            verticalArrangement = Arrangement.Center,
            horizontalAlignment = Alignment.CenterHorizontally){
-
            Text(text = "Welcome To Farmpur", fontSize = 20.sp)
             Spacer(modifier = Modifier.height(20.dp))
            Image(painter = painterResource(id = R.drawable.getstarted), contentDescription ="Alt")
@@ -40,12 +38,7 @@ fun GetStartedActivity(){
                contentColor = Color.White
            )) {
                Text(text = "Get Started", fontSize = 30.sp)
-               
            }
        }
-       
-       
    }
-
-
 }
