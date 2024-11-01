@@ -23,8 +23,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             FarmpurTheme {
 //                GetStartedActivity()
-//                MainContent()
-                LoginActivity()
+                MainContent()
+//                LoginActivity();
             }
         }
     }
@@ -39,8 +39,9 @@ fun MainContent() {
 fun AppNavHost() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "registrationScreen") {
-        composable("registrationScreen") { RegistrationActivity(navController) }  // Call RegistrationScreen here
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") { LoginActivity(navController) }
+        composable("registrationScreen") { RegistrationActivity(navController) }
         composable("customerScreen") { CustomerScreen() }
         composable("farmerScreen") { FarmerScreen() }
     }
