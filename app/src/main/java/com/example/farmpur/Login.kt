@@ -70,11 +70,16 @@ fun LoginActivity(navController: NavController){
         fetchUserData(currentUser.uid, navController, context)
     }
 
-    BackHandler {
-        if (navController.previousBackStackEntry == null) {
-            (context as? Activity)?.finish() // Close the app if at the root screen
-        } else {
-            navController.popBackStack()
+    // Modified BackHandler implementation
+    BackHandler(enabled = true) {
+        val activity = context as? Activity
+        if (activity != null) {
+            // If we're at the root of the back stack
+            if (navController.previousBackStackEntry == null) {
+                activity.finishAffinity() // This will properly close the app
+            } else {
+                navController.popBackStack()
+            }
         }
     }
 
@@ -86,7 +91,7 @@ fun LoginActivity(navController: NavController){
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-                .padding(bottom = 16.dp) // Add padding at bottom for better scroll experience
+                .padding(bottom = 16.dp)
         ){
             Image(
                 painter = painterResource(id = R.drawable.signup),
